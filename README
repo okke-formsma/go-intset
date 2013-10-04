@@ -2,6 +2,9 @@
 Bounded Sets of Integers
 ========================
 
+Based on code from https://github.com/phf/go-intset
+
+
 This should go into $GOROOT/src/pkg/container/intset or
 some such place eventually; I test it there anyway. :-D
 
