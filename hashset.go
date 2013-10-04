@@ -13,7 +13,7 @@ func (self *Hash) Insert(i int) {
 }
 
 func (self *Hash) Remove(i int) {
-	self.data[i] = false, false
+	self.data[i] = false
 }
 
 func (self *Hash) Has(i int) (b bool) {

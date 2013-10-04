@@ -5,7 +5,7 @@
 package intset
 
 import (
-	"rand"
+	"math/rand"
 	"testing"
 )
 
@@ -25,7 +25,7 @@ func checkInsert(t *testing.T, s Set, max int) {
 				t.Errorf("insert of %v didn't work", i)
 			}
 		}
-		for j := i+1; j < max; j++ {
+		for j := i + 1; j < max; j++ {
 			if s.Has(j) {
 				t.Errorf("insert of %v caused %v to be set", i, j)
 			}
@@ -39,7 +39,7 @@ func checkIter(t *testing.T, s Set, max int) {
 		id[i] = true
 	}
 	for x := range s.Iter() {
-		id[x] = false, false
+		delete(id, x)
 	}
 	if len(id) > 0 {
 		t.Errorf("not all values in set returned by Iter()")
@@ -54,7 +54,7 @@ func checkRemove(t *testing.T, s Set, max int) {
 				t.Errorf("remove of %v didn't work", i)
 			}
 		}
-		for j := i+1; j < max; j++ {
+		for j := i + 1; j < max; j++ {
 			if !s.Has(j) {
 				t.Errorf("remove of %v caused %v to be cleared", i, j)
 			}
@@ -79,9 +79,6 @@ func TestSet(t *testing.T) {
 	q := new(Hash)
 	q.Init(100)
 	checkAll(t, q, 100)
-	m := new(Williams)
-	m.Init(100)
-	checkAll(t, m, 100)
 	e := new(Simple)
 	e.Init(100)
 	checkAll(t, e, 100)
@@ -105,9 +102,9 @@ func benchRandom(b *testing.B, s Set, load int, max int) {
 	s.Init(max)
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < load; j++ {
-			s.Insert(rand.Int() % (max+1))
-			s.Remove(rand.Int() % (max+1))
-			s.Has(rand.Int() % (max+1))
+			s.Insert(rand.Int() % (max + 1))
+			s.Remove(rand.Int() % (max + 1))
+			s.Has(rand.Int() % (max + 1))
 		}
 		y := 0
 		for x := range s.Iter() {
@@ -137,13 +134,6 @@ func BenchmarkHash(b *testing.B) {
 	benchIt(b, s)
 }
 
-func BenchmarkWilliams(b *testing.B) {
-	b.StopTimer()
-	s := new(Williams)
-	b.StartTimer()
-	benchIt(b, s)
-}
-
 func BenchmarkSimple(b *testing.B) {
 	b.StopTimer()
 	s := new(Simple)
@@ -153,7 +143,7 @@ func BenchmarkSimple(b *testing.B) {
 
 const (
 	SMALL = 1000
-	LOAD = SMALL
+	LOAD  = SMALL
 	LARGE = 1000000
 )
 
@@ -167,20 +157,6 @@ func BenchmarkBitsetRandomDense(b *testing.B) {
 func BenchmarkBitsetRandomSparse(b *testing.B) {
 	b.StopTimer()
 	s := new(Bitset)
-	b.StartTimer()
-	benchRandom(b, s, LOAD, LARGE)
-}
-
-func BenchmarkWilliamsRandomDense(b *testing.B) {
-	b.StopTimer()
-	s := new(Williams)
-	b.StartTimer()
-	benchRandom(b, s, LOAD, SMALL)
-}
-
-func BenchmarkWilliamsRandomSparse(b *testing.B) {
-	b.StopTimer()
-	s := new(Williams)
 	b.StartTimer()
 	benchRandom(b, s, LOAD, LARGE)
 }

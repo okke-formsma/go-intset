@@ -1,12 +1,4 @@
 package intset
 
-import (
-	"unsafe"
-)
-
-// Kludge to figure out how many bits an int has. If Go ever
-// ran on machines where a byte is *not* 8 bits wide... We'd
-// be screwed... :-/
-
-var bits_per_int int = unsafe.Sizeof(bits_per_int)*8
-
+// Go has at least 32 bits in an int. We should really use int32 instead.
+var bits_per_int int = 4 * 8
